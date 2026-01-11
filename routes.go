@@ -14,8 +14,8 @@ import (
 func rateLimit(c *gin.Context) {
 	ip := c.ClientIP()
 	value := int(ips.Add(ip, 1))
+	fmt.Printf("ip: %s, count: %d\n", ip, value)
 	if value%50 == 0 {
-		fmt.Printf("ip: %s, count: %d\n", ip, value)
 	}
 	if value >= 200 {
 		if value%200 == 0 {
@@ -91,6 +91,22 @@ func streamRoom(c *gin.Context) {
 		case <-ticker.C:
 			c.SSEvent("stats", Stats())
 		}
+		return true
+	})
+}
+
+func urlRoute(c *gin.Context) {
+	url := c.Param("url")
+
+	resp, err := http.Get(url)
+	if err != nil {
+		c.String(http.StatusServiceUnavailable, err.Error())
+		return
+	}
+	defer resp.Body.Close()
+
+	c.Stream(func(w io.Writer) bool {
+		io.Copy(w, resp.Body)
 		return true
 	})
 }
