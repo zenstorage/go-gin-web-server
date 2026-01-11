@@ -39,7 +39,7 @@ func StartGin() {
 	router.GET("/room/:roomid", roomGET)
 	router.POST("/room-post/:roomid", roomPOST)
 	router.GET("/stream/:roomid", streamRoom)
-	router.GET("/url/:url", urlRoute)
+	router.GET("/url/*url", urlRoute)
 
 	port := os.Getenv("PORT")
 	if port == "" {

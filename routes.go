@@ -96,7 +96,10 @@ func streamRoom(c *gin.Context) {
 }
 
 func urlRoute(c *gin.Context) {
-	url := c.Param("url")
+	raw := c.Param("url")
+	url := strings.TrimPrefix(raw, "/")
+
+	fmt.Printf("url: %s\n", url)
 
 	resp, err := http.Get(url)
 	if err != nil {
